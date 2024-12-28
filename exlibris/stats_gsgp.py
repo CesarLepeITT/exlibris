@@ -133,7 +133,7 @@ class StatsGSGP(Stats):
                     df_name_run1 = self._read_metrics('name_run1', datasets[i], only_gsgp=True)
                     best_gsgp_name = str(int(df_name_run1.loc[df_error[f'{model_name}_{error_selection}'].idxmax(), f'{model_name}_name_run1']))
                     
-                    path = os.path.join(os.getcwd(), best_gsgp_name, f'{best_gsgp_name}_fitnesstrain.csv')
+                    path = os.path.join(os.getcwd(), best_gsgp_name, f'{best_gsgp_name}_fitnestrain.csv')
                     data_gsgp = pd.read_csv(path, header=None, index_col=0)
                     data_traces = list(data_gsgp[1])
                     x = range(0, len(data_traces))
@@ -154,7 +154,7 @@ class StatsGSGP(Stats):
         fig.legend(handles=legend_elements, loc='upper left', bbox_to_anchor=(1, 0.5), fontsize=20)
         plt.tight_layout()
         
-        path = os.path.join(os.getcwd(), self.path_figures, f'convergence_{error_selection}.pdf')
-        os.makedirs(self.path_figures, exist_ok=True)
+        path = os.path.join(os.getcwd(), self.figures_path, f'convergence_{error_selection}.pdf')
+        os.makedirs(self.figures_path, exist_ok=True)
         plt.savefig(path)
         plt.show()

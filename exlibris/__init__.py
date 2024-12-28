@@ -12,5 +12,5 @@ from .dataset import (
 )
 
 from .stats_gsgp import (
-    stats_gsgp
+    StatsGSGP
 )

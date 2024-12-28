@@ -8,6 +8,7 @@ setup(
     description="Exlibris is a Python library that provides statistical comparisons between different binary classification models. This library is specifically designed to compare the GSGP classifier with other models.",
     url='https://github.com/CesarLepeITT/exlibris',
     long_description=open('README.md').read(),
+    long_description_content_type="text/markdown",  # Asegúrate de que sea markdown
     author="Lepe Garcia Cesar",
     author_email="l22212360@tijuana.tecnm.mx",
     install_requires=[

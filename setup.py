@@ -9,7 +9,7 @@ setup(
     url='https://github.com/CesarLepeITT/exlibris',
     long_description=open('README.md').read(),
     author="Lepe Garcia Cesar",
-    author_email="l22212360@tijuana.teccnm.mx",
+    author_email="l22212360@tijuana.tecnm.mx",
     install_requires=[
         'matplotlib==3.10.0',
         'pandas==2.2.3',

@@ -17,7 +17,7 @@ from sklearn.base import clone
 from .dataset import Dataset
 
 class Stats:
-    def __init__(self, experiment_name, n_runs=30, models=None, datasets=None):
+    def __init__(self, experiment_name, n_runs=30, models=None, datasets=None, normalize = False, scaler_type = "minmax"):
         if models is None:
             models = {}
         if datasets is None:
@@ -27,7 +27,7 @@ class Stats:
         self.models = models
         self.datasets = datasets
         self.set_models(models=models)
-        self.set_datasets(datasets=datasets)
+        self.set_datasets(datasets=datasets, normalize=normalize, scaler_type=scaler_type)
 
         self.stats_path = os.path.join(os.getcwd(), f'stats_{self.experiment_name}')
 
@@ -116,7 +116,7 @@ class Stats:
     def get_datasets(self):
         return self.datasets
     
-    def set_datasets(self, datasets=None):
+    def set_datasets(self, datasets=None, normalize = False, scaler_type = "minmax"):
         if datasets is None:
             datasets = {}
 
@@ -125,9 +125,10 @@ class Stats:
             files = os.listdir(dataset_path)
             for file in files:
                 if file.endswith('.csv'):
-                    dataset_file_path = os.path.join(dataset_path, file)
+                    #dataset_file_path = os.path.join(dataset_path, file)
                     dataset_name = os.path.splitext(file)[0]
-                    datasets[dataset_name] = pd.read_csv(dataset_file_path)
+                    aux = Dataset(dataset_name)
+                    datasets[dataset_name] = aux.load_dataset(split_target = False, normalize=normalize, scaler_type=scaler_type)
 
         if not isinstance(datasets, dict):
             raise TypeError(f'Datasets must be a dictionary. {type(datasets)} was provided.')

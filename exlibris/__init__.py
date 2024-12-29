@@ -10,7 +10,3 @@ from .stats import (
 from .dataset import (
     Dataset
 )
-
-from .stats_gsgp import (
-    StatsGSGP
-)

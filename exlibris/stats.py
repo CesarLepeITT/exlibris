@@ -338,16 +338,24 @@ class Stats:
         for i, ax in enumerate(axes):
             for idx, (model_name, model) in enumerate(self.models.items()):
                 if model.__class__.__name__ in ["gsgpcudaregressor", "GsgpCudaClassifier"]:
-                    df_error = self._read_metrics(error_selection, datasets[i], only_gsgp=True)
                     df_name_run1 = self._read_metrics('name_run1', datasets[i], only_gsgp=True)
-                    best_gsgp_name = str(int(df_name_run1.loc[df_error[f'{model_name}_{error_selection}'].idxmax(), f'{model_name}_name_run1']))
+                    n_gsgps = len(df_name_run1)
+                    convergence_list = []
+                    for j in range(n_gsgps):
+                        name = str(df_name_run1.iloc[j,0])
+
+                        path = os.path.join(os.getcwd(), name, f'{name}_fitnestrain.csv')
+                        data_gsgp = pd.read_csv(path, header=None, index_col=0)
+                        data_traces = list(data_gsgp[1])
+                        
+                        if j == 0:
+                            convergence_list = [x / n_gsgps for x in data_traces]
+                        else:
+                            convergence_list = [a + b /n_gsgps for a, b in zip (convergence_list, data_traces)]
                     
-                    path = os.path.join(os.getcwd(), best_gsgp_name, f'{best_gsgp_name}_fitnestrain.csv')
-                    data_gsgp = pd.read_csv(path, header=None, index_col=0)
-                    data_traces = list(data_gsgp[1])
-                    x = range(0, len(data_traces))
+                    x = range(0, len(convergence_list))
                     
-                    ax.plot(x, data_traces, color=colors[idx], label=model_name)
+                    ax.plot(x, convergence_list, color=colors[idx], label=model_name)
 
             ax.set_ylabel('Fitness', fontweight='bold', fontsize=17)
             ax.set_title(f'({chr(97 + i)}) {datasets[i]}', fontweight='bold', fontsize=17)

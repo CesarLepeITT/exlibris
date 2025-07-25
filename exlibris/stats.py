@@ -328,7 +328,7 @@ class Stats:
 
         plt.show()
         
-    def get_convergencia(self):
+    def get_convergence(self):
         fig, axes = plt.subplots(ncols=2, nrows=5, figsize=(12, 20))
         axes = axes.flatten()
         
@@ -336,28 +336,32 @@ class Stats:
         colors = plt.cm.tab20b(np.linspace(0, 1, len(self.models)))
 
         for i, ax in enumerate(axes):
-            contador = 0
+            model_index = 0
             for idx, (model_name, model) in enumerate(self.models.items()):
                 if model.__class__.__name__ in ["gsgpcudaregressor", "GsgpCudaClassifier"]:
                     
-                    df_name_run1 = self._read_metrics('name_run1', datasets[i], only_gsgp=True)
-                    n_gsgps = len(df_name_run1)
-                    convergence_list = []
-                    data_traces = []
+                    df_runs1 = self._read_metrics('name_run1', datasets[i], only_gsgp=True)
+                    num_runs = len(df_runs1)
+                    convergence_avg = []
                     
-                    for j in range(n_gsgps):
-                        name = str(df_name_run1.iloc[j,contador])
-
-                        path = os.path.join(os.getcwd(), name, f'{name}_fitnestrain.csv')
-                        data_gsgp = pd.read_csv(path, header=None, index_col=0)
-                        data_traces = list(data_gsgp[1])
+                    for j in range(num_runs):
+                        run_name = str(df_runs1.iloc[j, model_index])
+                        csv_path = os.path.join(os.getcwd(), run_name, f'{run_name}_fitnesstrain.csv')
+                        df_fitness = pd.read_csv(csv_path, header=None, index_col=0)
+                        fitness_values = list(df_fitness[1])
+                        
                         if j == 0:
-                            convergence_list = [x / n_gsgps for x in data_traces]
+                            convergence_avg = [x / num_runs for x in fitness_values]
                         else:
-                            convergence_list = [a + b /n_gsgps for a, b in zip (convergence_list, data_traces)]
-                    x = range(0, len(convergence_list))
-                    ax.plot(x, convergence_list, color=colors[idx], label=model_name) 
-                contador+=1
+                            convergence_avg = [
+                                a + b / num_runs for a, b in zip(convergence_avg, fitness_values)
+                            ]
+                    
+                    x = range(len(convergence_avg))
+                    ax.plot(x, convergence_avg, color=colors[idx], label=model_name)
+                
+                model_index += 1
+
             ax.set_ylabel('Fitness', fontweight='bold', fontsize=17)
             ax.set_title(f'({chr(97 + i)}) {datasets[i]}', fontweight='bold', fontsize=17)
             ax.set_xlabel('Generations', fontweight='bold', fontsize=17)
@@ -372,7 +376,7 @@ class Stats:
         fig.legend(handles=legend_elements, loc='upper left', bbox_to_anchor=(1, 0.5), fontsize=20)
         plt.tight_layout()
         
-        path = os.path.join(os.getcwd(), self.figures_path, f'convergence.pdf')
+        save_path = os.path.join(os.getcwd(), self.figures_path, f'convergence.pdf')
         os.makedirs(self.figures_path, exist_ok=True)
-        plt.savefig(path)
+        plt.savefig(save_path)
         plt.show()

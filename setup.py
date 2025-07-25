@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="exlibris",
-    version="0.4.1",
+    version="0.5.1",
     packages=find_packages(),
     description="Exlibris is a Python library that provides statistical comparisons between different binary classification models. This library is specifically designed to compare the GSGP classifier with other models.",
     url='https://github.com/CesarLepeITT/exlibris',
